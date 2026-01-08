@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import List, Dict
 from config.supabase_client import get_supabase
 from services.personality_engine import get_personality_engine
-from utils.llm_client import llm_client
+from utils.llm_client import get_llm_client
 
 
 class DraftGenerator:
@@ -130,7 +130,7 @@ class DraftGenerator:
                     variant_instruction = f"\n\n[Generate variant #{i+1} - another authentic take]"
 
                 # Generate draft
-                draft_text = await llm_client.generate(
+                draft_text = await get_llm_client().generate(
                     system_prompt=system_prompt,
                     user_prompt=user_prompt + variant_instruction,
                     temperature=0.9,  # Higher temperature for variety
@@ -187,7 +187,7 @@ class DraftGenerator:
             user_prompt += f"\n\nADDITIONAL INSTRUCTIONS: {custom_instructions}"
 
         # Generate new draft
-        new_draft_text = await llm_client.generate(
+        new_draft_text = await get_llm_client().generate(
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             temperature=0.9,

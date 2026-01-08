@@ -33,5 +33,12 @@ class RedditClientManager:
             self.clients.clear()
 
 
-# Global instance
-reddit_client_manager = RedditClientManager()
+# Lazy-load global instance
+_reddit_client_manager_instance = None
+
+def get_reddit_client_manager() -> 'RedditClientManager':
+    """Get RedditClientManager instance (lazy-loaded)"""
+    global _reddit_client_manager_instance
+    if _reddit_client_manager_instance is None:
+        _reddit_client_manager_instance = RedditClientManager()
+    return _reddit_client_manager_instance

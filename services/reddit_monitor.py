@@ -4,7 +4,7 @@ from typing import List
 from uuid import UUID
 import praw
 from config.supabase_client import get_supabase
-from utils.reddit_client import reddit_client_manager
+from utils.reddit_client import get_reddit_client_manager
 from models.personality import Personality
 import json
 import httpx
@@ -45,7 +45,7 @@ class RedditMonitor:
         subreddits = personality.subreddits.primary + personality.subreddits.secondary
 
         # Get Reddit client
-        reddit = reddit_client_manager.get_client(account)
+        reddit = get_reddit_client_manager().get_client(account)
 
         opportunities_found = 0
 

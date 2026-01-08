@@ -1,5 +1,4 @@
 import google.generativeai as genai
-from openai import AsyncOpenAI
 from typing import Optional
 from config.settings import settings
 
@@ -17,6 +16,8 @@ class LLMClient:
             genai.configure(api_key=settings.GOOGLE_API_KEY)
             self.client = genai.GenerativeModel(self.model)
         elif self.provider == "openai":
+            # Only import OpenAI if needed
+            from openai import AsyncOpenAI
             self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
         else:
             raise ValueError(f"Unsupported LLM provider: {self.provider}")
@@ -89,5 +90,12 @@ class LLMClient:
             raise
 
 
-# Global instance
-llm_client = LLMClient()
+# Lazy-load global instance
+_llm_client_instance = None
+
+def get_llm_client() -> LLMClient:
+    """Get LLMClient instance (lazy-loaded)"""
+    global _llm_client_instance
+    if _llm_client_instance is None:
+        _llm_client_instance = LLMClient()
+    return _llm_client_instance

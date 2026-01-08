@@ -10,7 +10,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.performance_tracker import performance_tracker
+from services.performance_tracker import get_performance_tracker
 
 
 async def main():
@@ -19,7 +19,7 @@ async def main():
     print("=" * 60)
 
     try:
-        await performance_tracker.track_all_accounts()
+        await get_performance_tracker().track_all_accounts()
         print("\n✓ Performance tracking job completed successfully")
     except Exception as e:
         print(f"\n✗ Performance tracking job failed: {e}")

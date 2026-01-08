@@ -10,7 +10,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.reddit_poster import reddit_poster
+from services.reddit_poster import get_reddit_poster
 
 
 async def main():
@@ -19,7 +19,7 @@ async def main():
     print("=" * 60)
 
     try:
-        await reddit_poster.post_all_approved_drafts()
+        await get_reddit_poster().post_all_approved_drafts()
         print("\n✓ Posting job completed successfully")
     except Exception as e:
         print(f"\n✗ Posting job failed: {e}")

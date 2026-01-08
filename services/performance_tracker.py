@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict
 from config.supabase_client import get_supabase
-from utils.reddit_client import reddit_client_manager
+from utils.reddit_client import get_reddit_client_manager
 
 
 class PerformanceTracker:
@@ -27,7 +27,7 @@ class PerformanceTracker:
         print(f"Tracking u/{account['reddit_username']}...")
 
         # Get Reddit client
-        reddit = reddit_client_manager.get_client(account)
+        reddit = get_reddit_client_manager().get_client(account)
 
         # Get posted content from last 30 days
         thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)

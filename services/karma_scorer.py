@@ -1,7 +1,6 @@
 import time
 from typing import Dict
 from config.supabase_client import get_supabase
-from utils.llm_client import llm_client
 
 
 class KarmaScorer:

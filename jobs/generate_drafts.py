@@ -10,9 +10,9 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.draft_generator import draft_generator
-from services.karma_scorer import karma_scorer
-from utils.slack_client import slack_client
+from services.draft_generator import get_draft_generator
+from services.karma_scorer import get_karma_scorer
+from utils.slack_client import get_slack_client
 from config.supabase_client import get_supabase
 from datetime import datetime, timezone
 
@@ -26,11 +26,11 @@ async def main():
 
     try:
         # 1. Generate drafts for all accounts
-        await draft_generator.generate_drafts_for_all_accounts(max_opportunities_per_account=5)
+        await get_draft_generator().generate_drafts_for_all_accounts(max_opportunities_per_account=5)
 
         # 2. Score all pending drafts
         print("\nScoring drafts...")
-        await karma_scorer.score_all_pending_drafts()
+        await get_karma_scorer().score_all_pending_drafts()
 
         # 3. Send Slack notifications and set auto-approve timestamp
         print("\nSending Slack notifications...")
@@ -56,7 +56,7 @@ async def main():
                     }).eq('id', draft['id']).execute()
 
                 # Send Slack notification
-                await slack_client.send_draft_notification(account, drafts.data)
+                await get_slack_client().send_draft_notification(account, drafts.data)
 
         print("\n✓ Draft generation job completed successfully")
 

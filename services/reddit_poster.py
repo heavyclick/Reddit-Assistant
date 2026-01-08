@@ -3,9 +3,9 @@ from datetime import datetime, timezone, timedelta
 from typing import List, Dict
 from config.supabase_client import get_supabase
 from config.settings import settings
-from utils.reddit_client import reddit_client_manager
-from utils.rate_limiter import rate_limiter
-from utils.slack_client import slack_client
+from utils.reddit_client import get_reddit_client_manager
+from utils.rate_limiter import get_rate_limiter
+from utils.slack_client import get_slack_client
 
 
 class RedditPoster:
@@ -60,7 +60,7 @@ class RedditPoster:
     async def post_approved_drafts_for_account(self, account: Dict):
         """Post approved drafts for a single account"""
         # Check rate limit
-        can_post = rate_limiter.check_rate_limit(
+        can_post = get_rate_limiter().check_rate_limit(
             account_id=account['id'],
             limit_type='daily_comments',
             max_allowed=settings.MAX_COMMENTS_PER_DAY_DEFAULT,
@@ -88,14 +88,14 @@ class RedditPoster:
         print(f"Posting for u/{account['reddit_username']}: {len(drafts.data)} drafts")
 
         # Get Reddit client
-        reddit = reddit_client_manager.get_client(account)
+        reddit = get_reddit_client_manager().get_client(account)
 
         posts_made = 0
 
         for draft in drafts.data:
             try:
                 # Double-check rate limit before each post
-                can_post = rate_limiter.check_rate_limit(
+                can_post = get_rate_limiter().check_rate_limit(
                     account_id=account['id'],
                     limit_type='daily_comments',
                     max_allowed=settings.MAX_COMMENTS_PER_DAY_DEFAULT,
@@ -165,7 +165,7 @@ class RedditPoster:
             }).eq('id', draft['id']).execute()
 
             # Increment rate limit
-            rate_limiter.increment_rate_limit(
+            get_rate_limiter().increment_rate_limit(
                 account_id=account['id'],
                 limit_type='daily_comments',
                 max_allowed=settings.MAX_COMMENTS_PER_DAY_DEFAULT,
@@ -188,7 +188,7 @@ class RedditPoster:
 
             # Send confirmation via Slack
             try:
-                await slack_client.send_post_confirmation(
+                await get_slack_client().send_post_confirmation(
                     account,
                     posted_content.data[0]
                 )

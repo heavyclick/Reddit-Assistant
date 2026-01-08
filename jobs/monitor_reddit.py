@@ -10,7 +10,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from services.reddit_monitor import reddit_monitor
+from services.reddit_monitor import get_reddit_monitor
 
 
 async def main():
@@ -19,7 +19,7 @@ async def main():
     print("=" * 60)
 
     try:
-        await reddit_monitor.monitor_all_accounts()
+        await get_reddit_monitor().monitor_all_accounts()
         print("\n✓ Monitoring job completed successfully")
     except Exception as e:
         print(f"\n✗ Monitoring job failed: {e}")

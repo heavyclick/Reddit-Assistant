@@ -226,5 +226,12 @@ class SlackClient:
             print(f"✗ Failed to send error notification: {e}")
 
 
-# Global instance
-slack_client = SlackClient()
+# Lazy-load global instance
+_slack_client_instance = None
+
+def get_slack_client() -> 'SlackClient':
+    """Get SlackClient instance (lazy-loaded)"""
+    global _slack_client_instance
+    if _slack_client_instance is None:
+        _slack_client_instance = SlackClient()
+    return _slack_client_instance

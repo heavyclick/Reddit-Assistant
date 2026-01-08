@@ -86,5 +86,12 @@ class RateLimiter:
         ).execute()
 
 
-# Global instance
-rate_limiter = RateLimiter()
+# Lazy-load global instance
+_rate_limiter_instance = None
+
+def get_rate_limiter() -> 'RateLimiter':
+    """Get RateLimiter instance (lazy-loaded)"""
+    global _rate_limiter_instance
+    if _rate_limiter_instance is None:
+        _rate_limiter_instance = RateLimiter()
+    return _rate_limiter_instance
