@@ -15,9 +15,7 @@
     "@supabase/supabase-js": "^2.39.3",
     "@heroicons/react": "^2.1.1",
     "axios": "^1.6.5",
-    "date-fns": "^3.2.0",
-    "react-json-view": "^1.21.3",
-    "recharts": "^2.10.4"
+    "date-fns": "^3.2.0"
   },
   "devDependencies": {
     "typescript": "^5",
