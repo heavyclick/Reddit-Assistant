@@ -51,4 +51,25 @@ class Settings(BaseSettings):
         case_sensitive = True
 
 
-settings = Settings()
+# Lazy-load settings instance
+_settings_instance: Optional[Settings] = None
+
+
+def get_settings() -> Settings:
+    """Get Settings instance (lazy-loaded)"""
+    global _settings_instance
+    if _settings_instance is None:
+        _settings_instance = Settings()
+    return _settings_instance
+
+
+# For backwards compatibility - this creates a proxy object
+# that lazily loads settings on first attribute access
+class _SettingsProxy:
+    """Proxy that lazily loads settings on first access"""
+
+    def __getattr__(self, name):
+        return getattr(get_settings(), name)
+
+
+settings = _SettingsProxy()

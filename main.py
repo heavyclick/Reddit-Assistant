@@ -30,7 +30,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-db = get_supabase()
+# NOTE: Database client is now lazy-loaded via get_supabase() in each endpoint
+# to ensure environment variables are available when Railway starts the app
 
 
 # Health check
@@ -51,6 +52,7 @@ async def root():
 @app.get("/accounts")
 async def list_accounts():
     """List all accounts"""
+    db = get_supabase()
     result = db.table('accounts').select('*').execute()
     return {"accounts": result.data}
 
@@ -58,6 +60,7 @@ async def list_accounts():
 @app.get("/accounts/{account_id}")
 async def get_account(account_id: str):
     """Get account by ID"""
+    db = get_supabase()
     result = db.table('accounts').select('*').eq('id', account_id).execute()
 
     if not result.data:
@@ -69,6 +72,7 @@ async def get_account(account_id: str):
 @app.post("/accounts")
 async def create_account(account: AccountCreate):
     """Create new account"""
+    db = get_supabase()
     # Check account limit
     count = db.table('accounts').select('id', count='exact').execute()
     if count.count >= settings.MAX_ACCOUNTS:
@@ -98,6 +102,7 @@ async def create_account(account: AccountCreate):
 @app.patch("/accounts/{account_id}")
 async def update_account(account_id: str, update: AccountUpdate):
     """Update account"""
+    db = get_supabase()
     update_data = {k: v for k, v in update.dict().items() if v is not None}
     update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
 
@@ -112,6 +117,7 @@ async def update_account(account_id: str, update: AccountUpdate):
 @app.delete("/accounts/{account_id}")
 async def delete_account(account_id: str):
     """Delete account"""
+    db = get_supabase()
     db.table('accounts').delete().eq('id', account_id).execute()
     return {"message": "Account deleted"}
 
@@ -127,6 +133,7 @@ async def list_opportunities(
     limit: int = 50
 ):
     """List opportunities"""
+    db = get_supabase()
     query = db.table('opportunities').select('*')
 
     if account_id:
@@ -149,6 +156,7 @@ async def list_drafts(
     limit: int = 50
 ):
     """List drafts"""
+    db = get_supabase()
     query = db.table('drafts').select('*, opportunity:opportunities(*), account:accounts(*)')
 
     if account_id:
@@ -163,6 +171,7 @@ async def list_drafts(
 @app.get("/drafts/{draft_id}")
 async def get_draft(draft_id: str):
     """Get draft by ID"""
+    db = get_supabase()
     result = db.table('drafts').select(
         '*, opportunity:opportunities(*), account:accounts(*)'
     ).eq('id', draft_id).execute()
@@ -176,6 +185,7 @@ async def get_draft(draft_id: str):
 @app.post("/drafts/{draft_id}/approve")
 async def approve_draft(draft_id: str, approval: DraftApprove):
     """Approve a draft for posting"""
+    db = get_supabase()
     # Update draft
     update_data = {
         'status': 'approved',
@@ -199,6 +209,7 @@ async def approve_draft(draft_id: str, approval: DraftApprove):
 @app.post("/drafts/{draft_id}/reject")
 async def reject_draft(draft_id: str, rejection: DraftReject):
     """Reject a draft"""
+    db = get_supabase()
     result = db.table('drafts').update({
         'status': 'rejected',
         'user_notes': rejection.reason
@@ -237,6 +248,7 @@ async def get_analytics(account_id: str, days: int = 30):
 @app.get("/insights/{account_id}")
 async def get_insights(account_id: str):
     """Get learning insights for account"""
+    db = get_supabase()
     result = db.table('learning_insights').select('*').eq(
         'account_id', account_id
     ).order('confidence_score', desc=True).execute()
@@ -284,6 +296,7 @@ async def trigger_performance_tracking(background_tasks: BackgroundTasks):
 @app.post("/test-workflow/{account_id}")
 async def test_workflow(account_id: str):
     """Test the full workflow for one account"""
+    db = get_supabase()
     # Get account
     result = db.table('accounts').select('*').eq('id', account_id).execute()
     if not result.data:

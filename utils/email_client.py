@@ -1,16 +1,21 @@
 import resend
-from typing import List, Dict
+from typing import List, Dict, Optional
 from config.settings import settings
-
-resend.api_key = settings.RESEND_API_KEY
 
 
 class EmailClient:
     """Email notification client using Resend"""
 
+    _api_initialized = False
+
     def __init__(self):
+        # Initialize API key on first instantiation (lazy)
+        if not EmailClient._api_initialized:
+            resend.api_key = getattr(settings, 'RESEND_API_KEY', None)
+            EmailClient._api_initialized = True
+
         self.from_email = "Reddit Assistant <noreply@yourdomain.com>"
-        self.to_email = settings.NOTIFICATION_EMAIL
+        self.to_email = getattr(settings, 'NOTIFICATION_EMAIL', None)
         self.dashboard_url = settings.DASHBOARD_URL
 
     async def send_draft_approval_email(self, account: Dict, drafts: List[Dict]):
@@ -142,5 +147,13 @@ class EmailClient:
             print(f"✗ Failed to send confirmation email: {e}")
 
 
-# Global instance
-email_client = EmailClient()
+# Lazy-load global instance
+_email_client_instance: Optional['EmailClient'] = None
+
+
+def get_email_client() -> 'EmailClient':
+    """Get EmailClient instance (lazy-loaded)"""
+    global _email_client_instance
+    if _email_client_instance is None:
+        _email_client_instance = EmailClient()
+    return _email_client_instance
