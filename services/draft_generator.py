@@ -206,5 +206,12 @@ class DraftGenerator:
         return new_draft_text
 
 
-# Global instance
-draft_generator = DraftGenerator()
+# Lazy-load global instance
+_draft_generator_instance = None
+
+def get_draft_generator() -> 'DraftGenerator':
+    """Get DraftGenerator instance (lazy-loaded)"""
+    global _draft_generator_instance
+    if _draft_generator_instance is None:
+        _draft_generator_instance = DraftGenerator()
+    return _draft_generator_instance

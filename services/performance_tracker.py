@@ -227,5 +227,12 @@ class PerformanceTracker:
         }
 
 
-# Global instance
-performance_tracker = PerformanceTracker()
+# Lazy-load global instance
+_performance_tracker_instance = None
+
+def get_performance_tracker() -> 'PerformanceTracker':
+    """Get PerformanceTracker instance (lazy-loaded)"""
+    global _performance_tracker_instance
+    if _performance_tracker_instance is None:
+        _performance_tracker_instance = PerformanceTracker()
+    return _performance_tracker_instance

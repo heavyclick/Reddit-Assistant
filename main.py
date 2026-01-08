@@ -8,12 +8,11 @@ from config.settings import settings
 from config.supabase_client import get_supabase
 from models.account import AccountCreate, AccountUpdate
 from models.draft import DraftApprove, DraftReject
-from services.reddit_monitor import reddit_monitor
-from services.draft_generator import draft_generator
-from services.karma_scorer import karma_scorer
-from services.reddit_poster import reddit_poster
-from services.performance_tracker import performance_tracker
-from utils.email_client import email_client
+from services.reddit_monitor import get_reddit_monitor
+from services.draft_generator import get_draft_generator
+from services.karma_scorer import get_karma_scorer
+from services.reddit_poster import get_reddit_poster
+from services.performance_tracker import get_performance_tracker
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -215,7 +214,7 @@ async def reject_draft(draft_id: str, rejection: DraftReject):
 async def regenerate_draft(draft_id: str, custom_instructions: Optional[str] = None):
     """Regenerate a draft with optional custom instructions"""
     try:
-        new_text = await draft_generator.regenerate_draft(
+        new_text = await get_draft_generator().regenerate_draft(
             draft_id,
             custom_instructions
         )
@@ -231,7 +230,7 @@ async def regenerate_draft(draft_id: str, custom_instructions: Optional[str] = N
 @app.get("/analytics/{account_id}")
 async def get_analytics(account_id: str, days: int = 30):
     """Get account analytics"""
-    analytics = await performance_tracker.get_account_analytics(account_id, days)
+    analytics = await get_performance_tracker().get_account_analytics(account_id, days)
     return analytics
 
 
@@ -252,29 +251,29 @@ async def get_insights(account_id: str):
 @app.post("/jobs/monitor")
 async def trigger_monitor_job(background_tasks: BackgroundTasks):
     """Trigger Reddit monitoring job"""
-    background_tasks.add_task(reddit_monitor.monitor_all_accounts)
+    background_tasks.add_task(get_reddit_monitor().monitor_all_accounts)
     return {"message": "Monitoring job triggered"}
 
 
 @app.post("/jobs/generate-drafts")
 async def trigger_draft_generation(background_tasks: BackgroundTasks):
     """Trigger draft generation job"""
-    background_tasks.add_task(draft_generator.generate_drafts_for_all_accounts)
-    background_tasks.add_task(karma_scorer.score_all_pending_drafts)
+    background_tasks.add_task(get_draft_generator().generate_drafts_for_all_accounts)
+    background_tasks.add_task(get_karma_scorer().score_all_pending_drafts)
     return {"message": "Draft generation job triggered"}
 
 
 @app.post("/jobs/post-approved")
 async def trigger_posting_job(background_tasks: BackgroundTasks):
     """Trigger posting job"""
-    background_tasks.add_task(reddit_poster.post_all_approved_drafts)
+    background_tasks.add_task(get_reddit_poster().post_all_approved_drafts)
     return {"message": "Posting job triggered"}
 
 
 @app.post("/jobs/track-performance")
 async def trigger_performance_tracking(background_tasks: BackgroundTasks):
     """Trigger performance tracking job"""
-    background_tasks.add_task(performance_tracker.track_all_accounts)
+    background_tasks.add_task(get_performance_tracker().track_all_accounts)
     return {"message": "Performance tracking job triggered"}
 
 
@@ -293,13 +292,13 @@ async def test_workflow(account_id: str):
     account = result.data[0]
 
     # 1. Monitor
-    await reddit_monitor.monitor_account(account)
+    await get_reddit_monitor().monitor_account(account)
 
     # 2. Generate drafts
-    await draft_generator.generate_drafts_for_account(account, max_opportunities=3)
+    await get_draft_generator().generate_drafts_for_account(account, max_opportunities=3)
 
     # 3. Score drafts
-    await karma_scorer.score_all_pending_drafts()
+    await get_karma_scorer().score_all_pending_drafts()
 
     return {"message": "Workflow completed", "account": account['reddit_username']}
 

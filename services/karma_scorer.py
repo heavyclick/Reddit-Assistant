@@ -191,5 +191,12 @@ class KarmaScorer:
             return time.time()
 
 
-# Global instance
-karma_scorer = KarmaScorer()
+# Lazy-load global instance
+_karma_scorer_instance = None
+
+def get_karma_scorer() -> 'KarmaScorer':
+    """Get KarmaScorer instance (lazy-loaded)"""
+    global _karma_scorer_instance
+    if _karma_scorer_instance is None:
+        _karma_scorer_instance = KarmaScorer()
+    return _karma_scorer_instance

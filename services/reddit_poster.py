@@ -214,5 +214,12 @@ class RedditPoster:
             raise
 
 
-# Global instance
-reddit_poster = RedditPoster()
+# Lazy-load global instance
+_reddit_poster_instance = None
+
+def get_reddit_poster() -> 'RedditPoster':
+    """Get RedditPoster instance (lazy-loaded)"""
+    global _reddit_poster_instance
+    if _reddit_poster_instance is None:
+        _reddit_poster_instance = RedditPoster()
+    return _reddit_poster_instance

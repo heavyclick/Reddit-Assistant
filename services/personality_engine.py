@@ -256,5 +256,12 @@ Just write the comment as you would naturally post it on Reddit.
             self.cache.clear()
 
 
-# Global instance
-personality_engine = PersonalityEngine()
+# Lazy-load global instance
+_personality_engine_instance = None
+
+def get_personality_engine() -> 'PersonalityEngine':
+    """Get PersonalityEngine instance (lazy-loaded)"""
+    global _personality_engine_instance
+    if _personality_engine_instance is None:
+        _personality_engine_instance = PersonalityEngine()
+    return _personality_engine_instance

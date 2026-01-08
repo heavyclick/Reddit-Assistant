@@ -206,5 +206,12 @@ class RedditMonitor:
             return None
 
 
-# Global instance
-reddit_monitor = RedditMonitor()
+# Lazy-load global instance
+_reddit_monitor_instance = None
+
+def get_reddit_monitor() -> RedditMonitor:
+    """Get RedditMonitor instance (lazy-loaded)"""
+    global _reddit_monitor_instance
+    if _reddit_monitor_instance is None:
+        _reddit_monitor_instance = RedditMonitor()
+    return _reddit_monitor_instance
