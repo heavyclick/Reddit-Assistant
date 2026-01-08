@@ -1,0 +1,29 @@
+# Ignore frontend during backend deployment
+frontend/
+
+# Ignore documentation
+*.md
+!requirements.txt
+
+# Ignore git
+.git/
+.gitignore
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Ignore virtual environment
+venv/
+env/
+ENV/
+
+# Ignore IDE
+.vscode/
+.idea/
+*.swp
+*.swo
