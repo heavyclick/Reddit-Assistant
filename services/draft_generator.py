@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import List, Dict
 from config.supabase_client import get_supabase
-from services.personality_engine import personality_engine
+from services.personality_engine import get_personality_engine
 from utils.llm_client import llm_client
 
 
@@ -38,7 +38,7 @@ class DraftGenerator:
         print(f"Generating drafts for u/{account['reddit_username']}...")
 
         # Load personality
-        personality = await personality_engine.load_personality(
+        personality = await get_personality_engine().load_personality(
             account['personality_json_url'],
             account['id']
         )
@@ -114,8 +114,8 @@ class DraftGenerator:
     ) -> List[str]:
         """Generate multiple draft variants for an opportunity"""
         # Build prompts
-        system_prompt = personality_engine.build_system_prompt(personality)
-        user_prompt = personality_engine.build_user_prompt(opportunity, personality)
+        system_prompt = get_personality_engine().build_system_prompt(personality)
+        user_prompt = get_personality_engine().build_user_prompt(opportunity, personality)
 
         variants = []
 
@@ -173,14 +173,14 @@ class DraftGenerator:
         opportunity = draft['opportunity']
 
         # Load personality
-        personality = await personality_engine.load_personality(
+        personality = await get_personality_engine().load_personality(
             account['personality_json_url'],
             account['id']
         )
 
         # Build prompts
-        system_prompt = personality_engine.build_system_prompt(personality)
-        user_prompt = personality_engine.build_user_prompt(opportunity, personality)
+        system_prompt = get_personality_engine().build_system_prompt(personality)
+        user_prompt = get_personality_engine().build_user_prompt(opportunity, personality)
 
         # Add custom instructions if provided
         if custom_instructions:
