@@ -1,0 +1,360 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reddit Account Personality Profile",
+  "type": "object",
+  "required": ["account_id", "reddit_username", "demographics", "personality", "communication", "strategy"],
+  "properties": {
+    "account_id": {
+      "type": "string",
+      "description": "Unique identifier for this account"
+    },
+    "reddit_username": {
+      "type": "string",
+      "description": "Reddit username (without u/)"
+    },
+
+    "demographics": {
+      "type": "object",
+      "properties": {
+        "age": {
+          "type": "integer",
+          "minimum": 13,
+          "maximum": 120
+        },
+        "gender_identity": {
+          "type": "string",
+          "examples": ["Female", "Male", "Non-binary", "Prefer not to say"]
+        },
+        "location": {
+          "type": "string",
+          "description": "Optional location context (timezone, region)"
+        }
+      }
+    },
+
+    "disability_context": {
+      "type": "object",
+      "description": "Critical for authentic voice and engagement pacing",
+      "properties": {
+        "physical_limitations": {
+          "type": "string",
+          "description": "How physical disability affects typing, timing, energy"
+        },
+        "cognitive_fatigue_patterns": {
+          "type": "string",
+          "description": "When cognitive fatigue hits, how it manifests"
+        },
+        "time_availability_constraints": {
+          "type": "string",
+          "description": "Good hours, bad hours, flare-up patterns"
+        },
+        "urgent_needs": {
+          "type": "object",
+          "properties": {
+            "karma_goal": {
+              "type": "integer",
+              "description": "Target karma to unlock ability to post"
+            },
+            "time_sensitivity": {
+              "type": "string",
+              "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+            },
+            "emotional_stakes": {
+              "type": "string",
+              "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+            },
+            "reason": {
+              "type": "string",
+              "description": "Why this is urgent (e.g., 'need to ask disability question in r/AskDocs')"
+            }
+          }
+        }
+      }
+    },
+
+    "core_identity": {
+      "type": "object",
+      "required": ["primary_traits"],
+      "properties": {
+        "primary_traits": {
+          "type": "array",
+          "items": {"type": "string"},
+          "examples": [["dog mom", "chronic illness warrior", "empathetic listener"]]
+        },
+        "life_context": {
+          "type": "string",
+          "description": "One-sentence summary of who they are"
+        },
+        "values": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "What matters deeply"
+        },
+        "pet_identity": {
+          "type": "object",
+          "description": "For dog mom identity",
+          "properties": {
+            "is_pet_parent": {"type": "boolean"},
+            "pet_types": {
+              "type": "array",
+              "items": {"type": "string"},
+              "examples": [["dogs", "cats"]]
+            },
+            "favorite_breeds": {
+              "type": "array",
+              "items": {"type": "string"}
+            },
+            "emotional_attachment_style": {
+              "type": "string",
+              "description": "How they relate to animals emotionally"
+            }
+          }
+        },
+        "expertise_areas": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Topics where they have lived experience"
+        }
+      }
+    },
+
+    "psychological_traits": {
+      "type": "object",
+      "properties": {
+        "introversion_extroversion": {
+          "type": "string",
+          "enum": ["strongly_introverted", "introverted", "ambivert", "extroverted", "strongly_extroverted"]
+        },
+        "conflict_response_style": {
+          "type": "string",
+          "description": "How they handle disagreement",
+          "examples": ["avoid", "deflect_with_humor", "engage_calmly", "assert_boundaries"]
+        },
+        "sensitivity_to_tone": {
+          "type": "string",
+          "enum": ["very_sensitive", "moderately_sensitive", "resilient", "thick_skinned"]
+        },
+        "humor_preference": {
+          "type": "string",
+          "examples": ["self-deprecating", "witty", "wholesome", "sarcastic", "rare"]
+        },
+        "emotional_openness": {
+          "type": "string",
+          "enum": ["very_private", "selective", "moderately_open", "very_open"],
+          "description": "How much they share personal struggles"
+        }
+      }
+    },
+
+    "communication": {
+      "type": "object",
+      "required": ["voice", "engagement_style"],
+      "properties": {
+        "voice": {
+          "type": "object",
+          "properties": {
+            "tone": {
+              "type": "string",
+              "examples": ["warm, conversational, occasionally vulnerable"]
+            },
+            "formality": {
+              "type": "string",
+              "enum": ["very_casual", "casual", "casual_medium", "formal", "very_formal"]
+            },
+            "sentence_length_preference": {
+              "type": "string",
+              "enum": ["short_punchy", "medium", "long_flowing", "varied"]
+            },
+            "emoji_usage": {
+              "type": "string",
+              "enum": ["never", "rare", "moderate", "frequent", "very_frequent"]
+            },
+            "favorite_emojis": {
+              "type": "array",
+              "items": {"type": "string"},
+              "examples": [["❤️", "🐕", "💜", "🙏"]]
+            },
+            "signature_phrases": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Phrases this person naturally uses",
+              "examples": [["sending you strength", "fellow dog mom here"]]
+            }
+          }
+        },
+        "engagement_style": {
+          "type": "object",
+          "properties": {
+            "comment_length_preference": {
+              "type": "string",
+              "enum": ["brief_1_2_sentences", "medium_3_6_sentences", "long_7plus_sentences", "varies"]
+            },
+            "empathy_level": {
+              "type": "string",
+              "enum": ["low", "medium", "high", "very_high"]
+            },
+            "supportive_vs_advisory": {
+              "type": "string",
+              "enum": ["mostly_supportive", "balanced", "mostly_advisory"],
+              "description": "Do they comfort or give advice?"
+            },
+            "sharing_personal_experience": {
+              "type": "string",
+              "enum": ["never", "rarely", "sometimes", "often", "very_often"]
+            },
+            "asking_followup_questions": {
+              "type": "string",
+              "enum": ["never", "rarely", "sometimes", "often"]
+            },
+            "how_disagreement_expressed": {
+              "type": "string",
+              "examples": ["softly with 'I see it differently'", "direct but kind", "avoid entirely"]
+            }
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "properties": {
+            "topics_to_avoid": {
+              "type": "array",
+              "items": {"type": "string"},
+              "examples": [["politics", "religion", "weight loss advice"]]
+            },
+            "never_claim_expertise_in": {
+              "type": "array",
+              "items": {"type": "string"},
+              "examples": [["medical diagnosis", "legal advice", "financial advice"]]
+            },
+            "self_disclosure_boundaries": {
+              "type": "string",
+              "description": "What's too personal to share publicly"
+            },
+            "always_disclose": {
+              "type": "string",
+              "description": "Important disclaimers",
+              "examples": ["lived experience only, not medical advice"]
+            }
+          }
+        }
+      }
+    },
+
+    "interests": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "All relevant interests for authentic engagement"
+    },
+
+    "triggers_and_values": {
+      "type": "object",
+      "properties": {
+        "what_matters_deeply": {
+          "type": "array",
+          "items": {"type": "string"},
+          "examples": [["accessibility", "animal welfare", "chronic illness advocacy"]]
+        },
+        "what_annoys_or_angers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "examples": [["ableism", "dismissive doctors", "fake service dogs"]]
+        },
+        "what_feels_safe_and_understood": {
+          "type": "array",
+          "items": {"type": "string"},
+          "examples": [["validation of pain", "accommodations without judgment"]]
+        }
+      }
+    },
+
+    "subreddits": {
+      "type": "object",
+      "required": ["primary"],
+      "properties": {
+        "primary": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Core communities for daily engagement"
+        },
+        "secondary": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Occasional engagement"
+        },
+        "engagement_frequency": {
+          "type": "object",
+          "description": "How often to check each subreddit",
+          "patternProperties": {
+            "^r/": {
+              "type": "string",
+              "enum": ["hourly", "daily", "3x_week", "weekly"]
+            }
+          }
+        }
+      }
+    },
+
+    "strategy": {
+      "type": "object",
+      "required": ["posting_limits", "optimal_times"],
+      "properties": {
+        "posting_limits": {
+          "type": "object",
+          "properties": {
+            "max_comments_per_day": {"type": "integer"},
+            "max_posts_per_week": {"type": "integer"},
+            "min_hours_between_comments": {"type": "number"}
+          }
+        },
+        "optimal_times": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Time windows in user's timezone",
+          "examples": [["09:00-11:00 EST", "19:00-21:00 EST"]]
+        },
+        "priority_triggers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Keywords or situations that warrant immediate drafting",
+          "examples": [["disability accommodation help", "service dog advice needed"]]
+        },
+        "karma_strategy": {
+          "type": "object",
+          "properties": {
+            "target_subreddit_karma": {
+              "type": "object",
+              "description": "Karma goals per subreddit",
+              "patternProperties": {
+                "^r/": {"type": "integer"}
+              }
+            },
+            "preferred_karma_threshold": {
+              "type": "integer",
+              "description": "Minimum acceptable karma per comment"
+            }
+          }
+        }
+      }
+    },
+
+    "learning_preferences": {
+      "type": "object",
+      "properties": {
+        "learn_from_upvoted_comments": {"type": "boolean"},
+        "learn_from_downvoted_comments": {"type": "boolean"},
+        "adjust_tone_based_on_feedback": {"type": "boolean"},
+        "cross_account_learning": {"type": "boolean"}
+      }
+    },
+
+    "reddit_credentials": {
+      "type": "object",
+      "required": ["client_id", "client_secret", "refresh_token"],
+      "properties": {
+        "client_id": {"type": "string"},
+        "client_secret": {"type": "string"},
+        "refresh_token": {"type": "string"},
+        "user_agent": {"type": "string"}
+      }
+    }
+  }
+}
